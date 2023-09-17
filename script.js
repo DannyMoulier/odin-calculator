@@ -37,30 +37,45 @@ function operate(operator, num1, num2) {
 const numberButtons = document.querySelectorAll(".number");
 const operatorButtons = document.querySelectorAll(".operator");
 const equalsButton = document.querySelector("#equals");
+const display = document.querySelector("#display");
 
 let num1Arr = [];
+let num2Arr = [];
 
 numberButtons.forEach((numberButton) => {
     numberButton.addEventListener("click", function () {
-        num1Arr.push(numberButton.innerText);
+        if (!operator) {
+            num1Arr.push(numberButton.innerText);
+            display.innerText = num1Arr.join("");
+        }
     });
 });
 
 operatorButtons.forEach((operatorButton) => {
     operatorButton.addEventListener("click", function () {
-        if (num1Arr) {
-            num1 = parseInt(num1Arr.join(""));
-            operator = operatorButton.innerText;
+        if (operator) {
+            num2 = parseInt(num2Arr.join(""));
+            const result = operate(operator, num1, num2);
+            display.innerText = result;
+            num1 = result;
+            num2 = undefined;
+            num1Arr = [];
+            num2Arr = [];
+            operator = operator;
+        } else if (num1Arr || num1) {
+            if (!num1) {
+                num1 = parseInt(num1Arr.join(""));
+            }
         }
+        operator = operatorButton.innerText;
     });
 });
-
-let num2Arr = [];
 
 numberButtons.forEach((numberButton) => {
     numberButton.addEventListener("click", function () {
         if (num1 && operator) {
             num2Arr.push(numberButton.innerText);
+            display.innerText = num2Arr.join("");
         }
     });
 });
@@ -68,6 +83,12 @@ numberButtons.forEach((numberButton) => {
 equalsButton.addEventListener("click", function () {
     if (num1Arr && num1 && operator) {
         num2 = parseInt(num2Arr.join(""));
-        console.log(operate(operator, num1, num2));
+        const result = operate(operator, num1, num2);
+        display.innerText = result;
+        num1 = result;
+        num2 = undefined;
+        num1Arr = [];
+        num2Arr = [];
+        operator = undefined;
     }
 });
