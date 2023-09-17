@@ -53,6 +53,7 @@ const dotButton = document.querySelector("#dot");
 
 let numArr = [];
 display.innerText = 0;
+equalsClicked = false
 
 numberButtons.forEach((numberButton) => {
     numberButton.addEventListener("click", function () {
@@ -60,11 +61,26 @@ numberButtons.forEach((numberButton) => {
             numArr.push(numberButton.innerText);
             display.innerText = numArr.join("");
         }
+        if (num1 && operator) {
+            numArr.push(numberButton.innerText);
+            display.innerText = numArr.join("");
+        }
+        // if (equalsClicked) {
+        //     numArr.push(numberButton.innerText);
+        //     display.innerText = numArr.join("");
+        // }
     });
 });
 
 operatorButtons.forEach((operatorButton) => {
     operatorButton.addEventListener("click", function () {
+        // if (equalsClicked) {
+        //     num1 = Number(numArr.join(""));
+        //     equalsClicked = false
+        // } else if (numArr == []) {
+        //     evaluate();
+        //     dotButton.disabled = false;
+        // }
         if (operator) {
             evaluate();
             dotButton.disabled = false;
@@ -79,21 +95,23 @@ operatorButtons.forEach((operatorButton) => {
     });
 });
 
-numberButtons.forEach((numberButton) => {
-    numberButton.addEventListener("click", function () {
-        if (num1 && operator) {
-            numArr.push(numberButton.innerText);
-            display.innerText = numArr.join("");
-        }
-    });
-});
-
 equalsButton.addEventListener("click", function () {
     if (numArr && num1 && operator) {
         evaluate();
         operator = undefined;
     }
     dotButton.disabled = false;
+    equalsClicked = true;
+    if (num1 === Infinity) {
+        num1 = undefined;
+        num2 = undefined;
+        operator = undefined;
+        numArr = [];
+        display.innerText = "";
+        dotButton.disabled = false;
+        display.innerText = 'Math Err';
+        equalsClicked = false
+    }
 });
 
 clearButton.addEventListener("click", function () {
@@ -101,9 +119,9 @@ clearButton.addEventListener("click", function () {
     num2 = undefined;
     operator = undefined;
     numArr = [];
-    display.innerText = "";
-    dotButton.disabled = false;
     display.innerText = 0;
+    dotButton.disabled = false;
+    equalsClicked = false
 });
 
 deleteButton.addEventListener("click", function () {
