@@ -31,6 +31,8 @@ function operate(operator, num1, num2) {
         return multiply(num1, num2);
     } else if (operator === "/") {
         return divide(num1, num2);
+    } else if (operator === "%") {
+        return modulo(num1, num2);
     }
 }
 
@@ -57,34 +59,27 @@ equalsClicked = false
 
 numberButtons.forEach((numberButton) => {
     numberButton.addEventListener("click", function () {
+        if (equalsClicked) {
+            num1 = undefined;
+            equalsClicked = false;
+        }
         if (!operator) {
             numArr.push(numberButton.innerText);
             display.innerText = numArr.join("");
         }
-        if (num1 && operator) {
+        if (num1 >= 0 && operator) {
             numArr.push(numberButton.innerText);
             display.innerText = numArr.join("");
         }
-        // if (equalsClicked) {
-        //     numArr.push(numberButton.innerText);
-        //     display.innerText = numArr.join("");
-        // }
     });
 });
 
 operatorButtons.forEach((operatorButton) => {
     operatorButton.addEventListener("click", function () {
-        // if (equalsClicked) {
-        //     num1 = Number(numArr.join(""));
-        //     equalsClicked = false
-        // } else if (numArr == []) {
-        //     evaluate();
-        //     dotButton.disabled = false;
-        // }
         if (operator) {
             evaluate();
             dotButton.disabled = false;
-        } else if (numArr || num1) {
+        } else if (numArr || num1 >= 0) {
             if (!num1) {
                 num1 = Number(numArr.join(""));
             }
@@ -92,11 +87,12 @@ operatorButtons.forEach((operatorButton) => {
         operator = operatorButton.innerText;
         numArr = [];
         dotButton.disabled = false;
+        equalsClicked = false;
     });
 });
 
 equalsButton.addEventListener("click", function () {
-    if (numArr && num1 && operator) {
+    if (numArr && num1 >= 0 && operator) {
         evaluate();
         operator = undefined;
     }
