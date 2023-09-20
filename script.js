@@ -57,6 +57,13 @@ let numArr = [];
 display.innerText = 0;
 equalsClicked = false
 
+const numberKeys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
+const operatorKeys = ['%', '+', '-', '/', '*']
+const evaluationKeys = ['=', 'Enter']
+const clearKey = ['c']
+const deleteKey = ['Backspace']
+let dotKey = ['.']
+
 numberButtons.forEach((numberButton) => {
     numberButton.addEventListener("click", function () {
         if (equalsClicked) {
@@ -74,11 +81,31 @@ numberButtons.forEach((numberButton) => {
     });
 });
 
+
+window.addEventListener('keydown', function (e) {
+    if (numberKeys.includes(e.key)) {
+        if (equalsClicked) {
+            num1 = undefined;
+            equalsClicked = false;
+        }
+        if (!operator) {
+            numArr.push(e.key);
+            display.innerText = numArr.join("");
+        }
+        if (num1 >= 0 && operator) {
+            numArr.push(e.key);
+            display.innerText = numArr.join("");
+        }
+    }
+});
+
+
 operatorButtons.forEach((operatorButton) => {
     operatorButton.addEventListener("click", function () {
         if (operator) {
             evaluate();
             dotButton.disabled = false;
+            dotKey = ['.']
         } else if (numArr || num1 >= 0) {
             if (!num1) {
                 num1 = Number(numArr.join(""));
@@ -87,9 +114,29 @@ operatorButtons.forEach((operatorButton) => {
         operator = operatorButton.innerText;
         numArr = [];
         dotButton.disabled = false;
+        dotKey = ['.']
         equalsClicked = false;
     });
 });
+
+window.addEventListener('keydown', function (e) {
+    if (operatorKeys.includes(e.key)) {
+        if (operator) {
+            evaluate();
+            dotButton.disabled = false;
+            dotKey = ['.']
+        } else if (numArr || num1 >= 0) {
+            if (!num1) {
+                num1 = Number(numArr.join(""));
+            }
+        }
+        operator = e.key;
+        numArr = [];
+        dotButton.disabled = false;
+        dotKey = ['.']
+        equalsClicked = false;
+    }
+})
 
 equalsButton.addEventListener("click", function () {
     if (numArr && num1 >= 0 && operator) {
@@ -105,10 +152,34 @@ equalsButton.addEventListener("click", function () {
         numArr = [];
         display.innerText = "";
         dotButton.disabled = false;
+        dotKey = ['.']
         display.innerText = 'Math Err';
         equalsClicked = false
     }
 });
+
+window.addEventListener('keydown', function (e) {
+    if (evaluationKeys.includes(e.key)) {
+        if (numArr && num1 >= 0 && operator) {
+            evaluate();
+            operator = undefined;
+        }
+        dotButton.disabled = false;
+        dotKey = ['.']
+        equalsClicked = true;
+        if (num1 === Infinity) {
+            num1 = undefined;
+            num2 = undefined;
+            operator = undefined;
+            numArr = [];
+            display.innerText = "";
+            dotButton.disabled = false;
+            dotKey = ['.']
+            display.innerText = 'Math Err';
+            equalsClicked = false
+        }
+    }
+})
 
 clearButton.addEventListener("click", function () {
     num1 = undefined;
@@ -120,13 +191,43 @@ clearButton.addEventListener("click", function () {
     equalsClicked = false
 });
 
+window.addEventListener('keydown', function (e) {
+    if (clearKey.includes(e.key)) {
+        num1 = undefined;
+        num2 = undefined;
+        operator = undefined;
+        numArr = [];
+        display.innerText = 0;
+        dotButton.disabled = false;
+        dotKey = ['.']
+        equalsClicked = false
+    }
+})
+
 deleteButton.addEventListener("click", function () {
     numArr.pop();
     display.innerText = numArr.join("");
 });
 
+window.addEventListener('keydown', function (e) {
+    if (deleteKey.includes(e.key)) {
+        numArr.pop();
+        display.innerText = numArr.join("");
+    }
+})
+
 dotButton.addEventListener("click", function () {
     numArr.push(dotButton.innerText);
     display.innerText = numArr.join("");
     dotButton.disabled = true;
+    dotKey = []
 });
+
+window.addEventListener('keydown', function (e) {
+    if (dotKey.includes(e.key)) {
+        numArr.push(dotButton.innerText);
+        display.innerText = numArr.join("");
+        dotButton.disabled = true;
+        dotKey = []
+    }
+})
