@@ -18,7 +18,6 @@ function modulo(num1, num2) {
     return num1 % num2;
 }
 
-
 function operate(operator, num1, num2) {
     if (operator === "+") {
         return add(num1, num2);
@@ -49,20 +48,30 @@ function choseNumber(arg) {
     }
     if (!operator) {
         numArr.push(arg);
-        display.innerText = numArr.join("");
-    }
-    if (num1 >= 0 && operator) {
+        displayedValue = numArr.join("");
+        if (displayedValue.length > 11) {
+            // Truncate the value to 11 characters
+        displayedValue = displayedValue.slice(0, 11);
+        }
+        display.innerText = displayedValue;
+    } else if (typeof num1 === 'number' && operator) {
         numArr.push(arg);
-        display.innerText = numArr.join("");
+        displayedValue = numArr.join("");
+        if (displayedValue.length > 11) {
+            // Truncate the value to 11 characters
+        displayedValue = displayedValue.slice(0, 11);
+        }
+        display.innerText = displayedValue;
     }
 }
+
 
 function choseOperator(arg) {
     if (operator) {
         evaluate();
         dotButton.disabled = false;
         dotKey = ["."];
-    } else if (numArr || num1 >= 0) {
+    } else if (numArr || typeof num1 === 'number') {
         if (!num1) {
             num1 = Number(numArr.join(""));
         }
@@ -75,7 +84,7 @@ function choseOperator(arg) {
 }
 
 function equals() {
-    if (numArr && num1 >= 0 && operator) {
+    if (numArr && typeof num1 === 'number' && operator) {
         evaluate();
         operator = undefined;
     }
@@ -106,12 +115,25 @@ function clearAll() {
 
 function deleteChar() {
     numArr.pop();
-    display.innerText = numArr.join("");
+    displayedValue = numArr.join("");
+    if (displayedValue.length === 0) {
+        displayedValue = "0";
+    }
+    if (displayedValue.length > 11) {
+        // Truncate the value to 11 characters
+        displayedValue = displayedValue.slice(0, 11);
+    }
+    display.innerText = displayedValue;
 }
 
 function addDecimalPoint() {
     numArr.push(dotButton.innerText);
-    display.innerText = numArr.join("");
+    displayedValue = numArr.join("");
+    if (displayedValue.length > 11) {
+        // Truncate the value to 11 characters
+        displayedValue = displayedValue.slice(0, 11);
+    }
+    display.innerText = displayedValue;
     dotButton.disabled = true;
     dotKey = [];
 }
@@ -129,15 +151,18 @@ const deleteButton = document.querySelector("#del");
 const dotButton = document.querySelector("#dot");
 
 let numArr = [];
-display.innerText = 0;
+let displayedValue = "0"; // Initialize displayedValue with "0"
+display.innerText = displayedValue;
 equalsClicked = false;
 
-const numberKeys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"];
+let numberKeys = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-"];
 const operatorKeys = ["%", "+", "-", "/", "*"];
 const evaluationKeys = ["=", "Enter"];
 const clearKey = ["c"];
 const deleteKey = ["Backspace"];
 let dotKey = ["."];
+
+// MOUSE CONTROLS
 
 numberButtons.forEach((numberButton) => {
     numberButton.addEventListener("click", function () {
@@ -150,8 +175,6 @@ operatorButtons.forEach((operatorButton) => {
         choseOperator(operatorButton.innerText);
     });
 });
-
-// MOUSE CONTROLS
 
 equalsButton.addEventListener("click", function () {
     equals();
@@ -169,13 +192,13 @@ dotButton.addEventListener("click", function () {
     addDecimalPoint();
 });
 
+// KEYBOARD CONTROLS
+
 window.addEventListener("keydown", function (e) {
     if (numberKeys.includes(e.key)) {
         choseNumber(e.key);
     }
 });
-
-// KEYBOARD CONTROLS
 
 window.addEventListener("keydown", function (e) {
     if (operatorKeys.includes(e.key)) {
@@ -202,3 +225,7 @@ window.addEventListener("keydown", function (e) {
         addDecimalPoint();
     }
 });
+
+if (display.innerText.length > 10) {
+    console.log("num of chars exceeeds 10")
+}
